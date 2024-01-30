@@ -1,0 +1,2 @@
+adeus
+/home/bruno/Desktop/Minishell
