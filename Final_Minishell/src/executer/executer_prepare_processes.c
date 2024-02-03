@@ -100,6 +100,11 @@ void	prepare_processes(t_command_table **command_table, char **envp,
 		ft_free_tabs((void **)path_list);
 		memptr->path_list = NULL;
 	}
+	else if (access((*command_table)->cmd[0], X_OK) == 0)
+	{
+		(*command_table)->cmd_target = ft_strdup((*command_table)->cmd[0]);
+		(*command_table)->command_type = EXECUTABLE;
+	}
 	else
 		if (!check_commands(command_table, path_list, *memptr))
 			return ;
