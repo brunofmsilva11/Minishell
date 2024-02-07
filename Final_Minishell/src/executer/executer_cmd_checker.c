@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 10:51:48 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/02 22:48:48 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 20:16:20 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@ void	remove_null_strings(t_command_table *current, t_memptr memptr)
 		temp = current->cmd;
 		current->cmd = ft_tabdup(&current->cmd[i]);
 		if (!current->cmd)
-			exit_error(MALLOC_ERROR, memptr);
+			exit_error(MALLOC_ERROR, memptr, NULL);
 		ft_free_tabs((void **)temp);
 	}
 }
 
+// Alterei para também dar erro em caso de No Null Command Type
 int	check_commands(t_command_table **command_table, char **path_list,
 			t_memptr memptr)
 {
@@ -68,7 +69,8 @@ int	check_commands(t_command_table **command_table, char **path_list,
 			check_builtin(current);
 			if (current->command_type != BUILTIN)
 				check_executables(current, path_list, memptr);
-			if (current->command_type == NULL_COMMANDTYPE)
+			if (current->command_type == NULL_COMMANDTYPE
+				|| current->command_type == NO_NULL_COMMANDTYPE)
 				non_exit_error(COMMAND_ERROR, memptr, *current->cmd);
 			else if (current->command_type == DIRECTORY)
 				non_exit_error(DIRECTORY_ERROR, memptr, current->cmd_target);

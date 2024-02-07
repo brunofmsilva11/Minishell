@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_executable_checker.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 14:39:27 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/03 08:46:54 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:58:48 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	absolute_check_executables(t_command_table *current, t_memptr memptr)
 
 	test_command = ft_strdup(current->cmd[0]);
 	if (!test_command)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	if (access(test_command, F_OK) == 0)
 	{
 		current->cmd_target = test_command;
@@ -59,7 +59,7 @@ void	relative_check_executables(t_command_table *current,
 	{
 		test_command = ft_strjoin(path_list[i++], current->cmd[0]);
 		if (!test_command)
-			exit_error(MALLOC_ERROR, memptr);
+			exit_error(MALLOC_ERROR, memptr, NULL);
 		if (access(test_command, F_OK) == 0)
 		{
 			relative_check_executables_subfunc(current, test_command);
@@ -81,8 +81,9 @@ void	relative_check_executables_subfunc(t_command_table *current,
 	else
 	{
 		dir = opendir(test_command);
-		if (dir != NULL && ((current->cmd[0][0] == '.')
-			&& (current->cmd[0][1] == '/')))
+		if (dir != NULL
+			&& (((current->cmd[0][0] == '.') && (current->cmd[0][1] == '/'))
+			|| ft_last_char(current->cmd[0]) == '/'))
 			current->command_type = DIRECTORY;
 		else if (dir == NULL && (access(test_command, X_OK) == 0))
 			current->command_type = EXECUTABLE;

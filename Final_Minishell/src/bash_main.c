@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/02 18:54:29 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/02 18:53:04 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 11:24:54 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_env	*set_environment_vars(char **envp, t_memptr memptr)
 
 	envv = init_envv(envp);
 	if (envv == NULL)
-		exit_error(ENV_ERROR, memptr);
+		exit_error(ENV_ERROR, memptr, NULL);
 	set_envv(envv);
 	return (envv);
 }
@@ -40,7 +40,7 @@ void	update_envp(char ***envp, t_memptr *memptr, t_env *env_vars)
 	ft_free_tabs((void **)*envp);
 	*envp = ft_tabdup(env_vars->env_var);
 	if (!*envp)
-		exit_error(MALLOC_ERROR, *memptr);
+		exit_error(MALLOC_ERROR, *memptr, NULL);
 	memptr->envp = *envp;
 	free_envv(env_vars);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_childparent_processes.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 14:43:18 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/03 10:37:36 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:45:33 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ void	process_parent(int **pipe_fd, int process_num, int *pid_array,
 		g_status_flag = WTERMSIG(g_status_flag) + 128;
 	memptr->return_value = g_status_flag;
 	free(pid_array);
+	if (memptr->pipe_fd)
+	{
+		ft_free_tabs((void **)memptr->pipe_fd);
+		memptr->pipe_fd = NULL;
+	}
 	clean_memory(*memptr);
 }
 
@@ -49,7 +54,7 @@ void	create_pid_array(int **pid_array, int process_num, t_memptr memptr)
 {
 	*pid_array = (int *)malloc(sizeof(int) * process_num);
 	if (!(*pid_array))
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 }
 
 void	process_forks(t_command_table **command_table, char **envp,
@@ -69,7 +74,7 @@ void	process_forks(t_command_table **command_table, char **envp,
 	{
 		current->pid = fork();
 		if (current->pid < 0)
-			exit_error(FORK_ERROR, memptr);
+			exit_error(FORK_ERROR, memptr, NULL);
 		else if (current->pid == 0)
 		{
 			process_fork_subfunc(pid_array, current, i);

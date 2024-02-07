@@ -35,7 +35,7 @@ int	env(char **argv)
 		return (EXIT_FAILURE);
 	if (argv[0] != NULL && argv[1] != NULL)
 	{
-		printf("%s: %s: No such file or directory\n", argv[0], argv[1]);
+		ft_printf("%s: %s: No such file or directory\n", argv[0], argv[1]);
 		return (127);
 	}
 	i = 0;

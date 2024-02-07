@@ -1,36 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals_handler.c                                  :+:      :+:    :+:   */
+/*   ft_last_char.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/08 19:33:45 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/06 20:16:01 by mde-sa--         ###   ########.fr       */
+/*   Created: 2024/02/06 17:53:04 by mde-sa--          #+#    #+#             */
+/*   Updated: 2024/02/06 17:55:20 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	sigint_handler(int signum)
+char	ft_last_char(const char *string)
 {
-	(void)signum;
-	ft_printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_status_flag = SIGINT_SIGNAL;
-}
+	int	i;
 
-void	sigint_handler_during_processes_child(int signum)
-{
-	(void)signum;
-	g_status_flag = SIGINT_SIGNAL;
-}
-
-void	sigint_handler_during_processes_parent(int signum)
-{
-	(void)signum;
-	g_status_flag = NO_SIGNAL;
-	printf("\n");
+	if (!string)
+		return ('\0');
+	i = ft_strlen(string);
+	i--;
+	return (string[i]);
 }

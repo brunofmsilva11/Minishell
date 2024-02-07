@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 15:59:16 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/03 10:27:02 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 18:15:02 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@
 # define USAGE_ERROR "Usage error: \'./minishell\'.\n"
 # define QUOTE_ERROR "Input error: unclosed quote\n"
 # define SYNTAX_ERROR "Syntax error near unexpected token\n"
-# define COMMAND_ERROR "command not found\n"
-# define OPEN_ERROR "No such file or directory\n"
-# define DIRECTORY_ERROR "Is a directory\n"
-# define PERMISSION_ERROR "Permission denied\n"
+# define COMMAND_ERROR ": command not found\n"
+# define OPEN_ERROR ": No such file or directory\n"
+# define DIRECTORY_ERROR ": Is a directory\n"
+# define PERMISSION_ERROR ": Permission denied\n"
 
 // Exit code / signal errors
 # define NO_SIGNAL 0
@@ -161,6 +161,7 @@ typedef struct s_memptr {
 	char			**path_list;
 	int				**pipe_fd;
 	char			**argv;
+	int				argc;
 	char			**envp;
 	int				return_value;
 }	t_memptr;
@@ -199,10 +200,15 @@ void				clear_command_table(t_command_table **lst);
 void				clean_memory(t_memptr memptr);
 void				close_pipes_error(int **pipe);
 void				final_clear_and_exit(t_memptr memptr, char **envp);
+
 /// exit_error.c
-void				exit_error(char *error_message, t_memptr memptr, ...);
-void				non_exit_error(char *error_msg, t_memptr memptr, ...);
+void				exit_error(char *error_msg, t_memptr memptr,
+						char *extra_error_msg);
+void				non_exit_error(char *error_msg, t_memptr memptr,
+						char *extra_error_msg);
 void				set_g_status_flag(char *error_msg);
+void				print_to_fd(int fd, char *error_msg, char *extra_error_msg,
+						t_memptr memptr);
 
 /// get_input.c
 void				trim_left_whitespace(char **input, t_memptr memptr);
@@ -255,10 +261,15 @@ void				set_full_redirections(t_token *lexer_sublist,
 /// parser_heredoc.c
 void				check_heredocs(t_command_table **command_table,
 						t_memptr memptr);
+void				analyze_delimiter(char **unquoted_delimiter,
+						char *delimiter, enum e_QuoteType *quote_status,
+						t_memptr memptr);
 void				create_heredoc_buffer(char *delimiter,
-						char **buffer, t_memptr memptr);
-void				create_heredoc_file(t_command_table **command_table,
+						char **buffer, enum e_QuoteType quote_status,
+						t_memptr memptr);
+void				create_heredoc(t_command_table **command_table,
 						char *buffer, t_memptr memptr);
+void				expand_buffer(char **buffer, t_memptr memptr);
 
 /// expander.c
 int					is_valid_env_char(char c);
@@ -431,7 +442,7 @@ int					pwd(void);
 ///echo.c
 int					echo(char **args);
 int					check_echo_arg(char *args);
-char				*get_echo_var(char *str);
+char				*get_echo_var(char *str, t_memptr memptr);
 int					contains_str(const char *str1, char *str2);
 
 ///echo2.c

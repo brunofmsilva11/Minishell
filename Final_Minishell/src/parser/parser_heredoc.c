@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:02:22 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/01/30 18:10:57 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/06 15:44:32 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	check_heredocs(t_command_table **command_table, t_memptr memptr)
 {
-	int	i;
+	int					i;
+	char				*delimiter;
+	enum e_QuoteType	quote_status;
 
 	i = 0;
 	while ((*command_table)->full_input[i])
@@ -27,17 +29,40 @@ void	check_heredocs(t_command_table **command_table, t_memptr memptr)
 				free((*command_table)->heredoc_buffer);
 				(*command_table)->heredoc_buffer = NULL;
 			}
-			create_heredoc_buffer((*command_table)->full_input[i + 1],
-				&(*command_table)->heredoc_buffer, memptr);
+			analyze_delimiter(&delimiter, (*command_table)->full_input[i + 1],
+				&quote_status, memptr);
+			create_heredoc_buffer(delimiter,
+				&(*command_table)->heredoc_buffer, quote_status, memptr);
+			free(delimiter);
 		}
 		i = i + 2;
 	}
 	if ((*command_table)->heredoc_buffer)
-		create_heredoc_file(command_table, (*command_table)->heredoc_buffer,
-			memptr);
+		create_heredoc(command_table, (*command_table)->heredoc_buffer, memptr);
 }
 
-void	create_heredoc_buffer(char *delimiter, char **buffer, t_memptr memptr)
+// Define se delimitador está ou não sob aspas, e retira as aspas do mesmo
+void	analyze_delimiter(char **unquoted_delimiter, char *delimiter,
+			enum e_QuoteType *quote_status, t_memptr memptr)
+{
+	int	i;
+
+	*quote_status = OUT_QUOTE;
+	i = 0;
+	if (*delimiter == SQUOTE)
+		*quote_status = IN_QUOTE;
+	else if (*delimiter == DQUOTE)
+		*quote_status = IN_DQUOTE;
+	if ((*quote_status) != OUT_QUOTE)
+		i++;
+	*unquoted_delimiter = ft_strndup(delimiter + i,
+			ft_strlen(delimiter) - 2 * i);
+	if (!*unquoted_delimiter)
+		exit_error(MALLOC_ERROR, memptr, NULL);
+}
+
+void	create_heredoc_buffer(char *delimiter, char **buffer,
+			enum e_QuoteType quote_status, t_memptr memptr)
 {
 	int		bytes_read;
 	char	input[1001];
@@ -45,7 +70,7 @@ void	create_heredoc_buffer(char *delimiter, char **buffer, t_memptr memptr)
 
 	*buffer = ft_calloc(1, sizeof(char));
 	if (!(*buffer))
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	while (TRUE)
 	{
 		ft_printf("> ");
@@ -57,13 +82,59 @@ void	create_heredoc_buffer(char *delimiter, char **buffer, t_memptr memptr)
 			break ;
 		temp = ft_strjoin(*buffer, input);
 		if (!temp)
-			exit_error(MALLOC_ERROR, memptr);
+			exit_error(MALLOC_ERROR, memptr, NULL);
 		free(*buffer);
 		*buffer = temp;
 	}
+	if (quote_status == OUT_QUOTE)
+		expand_buffer(buffer, memptr);
 }
 
-void	create_heredoc_file(t_command_table **command_table,
+// Expansão de heredoc caso delimitador não esteja com aspas
+void	expand_buffer(char **buffer, t_memptr memptr)
+{
+	int	i;
+
+	i = 0;
+	while ((*buffer)[i])
+	{
+		if ((*buffer)[i] == '$')
+		{
+			expand_env_no_quotes(buffer, &i, memptr);
+			i--;
+		}
+		i++;
+	}
+}
+
+// Versão antiga do expand_buffer
+/* void	expand_buffer(char **buffer, t_memptr memptr)
+{
+	int					i;
+	enum e_QuoteType	quote_flag;
+
+	i = 0;
+	quote_flag = OUT_QUOTE;
+	while ((*buffer)[i])
+	{
+		if ((*buffer)[i] == SQUOTE)
+			quote_flag = IN_QUOTE;
+		while (((*buffer)[i]) && quote_flag == IN_QUOTE
+			&& ((*buffer)[i]) != SQUOTE)
+		{
+			if ((*buffer)[i++] == SQUOTE)
+				quote_flag = OUT_QUOTE;
+		}
+		if ((*buffer)[i] == '$')
+		{
+			expand_env_no_quotes(buffer, &i, memptr);
+			i--;
+		}
+		i++;
+	}
+} */
+
+void	create_heredoc(t_command_table **command_table,
 			char *buffer, t_memptr memptr)
 {
 	char	*name;
@@ -83,9 +154,9 @@ void	create_heredoc_file(t_command_table **command_table,
 	if (fd == -1)
 		exit_error(OPEN_ERROR, memptr, name);
 	if (write(fd, buffer, ft_strlen(buffer)) == -1)
-		exit_error(WRITE_ERROR, memptr);
+		exit_error(WRITE_ERROR, memptr, NULL);
 	if (close(fd) == -1)
-		exit_error(CLOSE_ERROR, memptr);
+		exit_error(CLOSE_ERROR, memptr, NULL);
 	free(buffer);
 	(*command_table)->heredoc_buffer = name;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_noquotes.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bmota-si <bmota-si@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 08:30:35 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/03 10:21:18 by bmota-si         ###   ########.fr       */
+/*   Updated: 2024/02/06 11:27:35 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void	exit_value_expand(char **string, int *start, t_memptr memptr)
 	memptr.return_value = g_status_flag;
 	exit_value_str = ft_itoa(memptr.return_value);
 	if (!exit_value_str)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	if (concatenate(string, exit_value_str, start, (*start) + 2) == 1)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	(*start) = (*start) + ft_strlen(exit_value_str);
 	free(exit_value_str);
 }
@@ -63,9 +63,9 @@ void	ansi_quoting(char **string, int *start, t_memptr memptr)
 		end++;
 	substring = ft_substr((*string), (*start) + 2, end - (*start) - 2);
 	if (!substring)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	if (concatenate(string, substring, start, end + 1) == 1)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	(*start) = (*start) + ft_strlen(substring);
 	free(substring);
 }
@@ -78,17 +78,22 @@ void	expand_env_no_quotes(char **string, int *start, t_memptr memptr)
 
 	expanded = NULL;
 	end = (*start) + 1;
-	while (is_valid_env_char ((*string)[end]))
+	if (ft_isdigit((*string)[end]))
 		end++;
+	else
+	{
+		while (is_valid_env_char((*string)[end]))
+			end++;
+	}
 	substring = ft_substr((*string), (*start) + 1, end - (*start) - 1);
 	if (!substring)
-		exit_error(MALLOC_ERROR, memptr);
-	expanded = get_echo_var(substring);
+		exit_error(MALLOC_ERROR, memptr, NULL);
+	expanded = get_echo_var(substring, memptr);
 	if (!expanded)
 		expanded = "";
 	free(substring);
 	if (concatenate(string, expanded, start, end) == 1)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 	(*start) = (*start) + ft_strlen(expanded);
 }
 
@@ -98,5 +103,5 @@ void	localization(char **string, int *start, t_memptr memptr)
 
 	placeholder = "";
 	if (concatenate(string, placeholder, start, (*start) + 1) == 1)
-		exit_error(MALLOC_ERROR, memptr);
+		exit_error(MALLOC_ERROR, memptr, NULL);
 }
