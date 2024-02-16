@@ -55,4 +55,3 @@ echo h > src
 
 																										# Comandos não válidos não funciona bem
 																										ex: "Wohoo!"
-
