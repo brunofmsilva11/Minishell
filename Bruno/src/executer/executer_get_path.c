@@ -51,7 +51,7 @@ char	**get_path_list(t_memptr *memptr)
 	i = 0;
 	while (memptr->envp[i])
 	{
-		if (ft_strncmp(memptr->envp[i], "PATH") == 0)
+		if (ft_strcmp(memptr->envp[i], "PATH") == 0)
 		{
 			path_list = ft_split(ft_strndup(memptr->envp[i], 4), ':');
 			break;

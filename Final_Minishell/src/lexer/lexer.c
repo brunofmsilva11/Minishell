@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: bmota-si <bmota-si@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 19:52:58 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/02 22:49:48 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2024/02/21 15:39:25 by bmota-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ t_token	*read_readline(t_memptr memptr)
 	input = NULL;
 	input = get_input("minishell: ", memptr);
 	if (!input)
+	{
+		g_status_flag = 2;
 		return (NULL);
+	}
 	head = NULL;
 	fill_in_list(input, &head, memptr);
 	free(input);

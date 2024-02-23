@@ -6,7 +6,7 @@
 /*   By: bmota-si <bmota-si@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 17:23:50 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/15 15:14:38 by bmota-si         ###   ########.fr       */
+/*   Updated: 2024/02/21 15:34:47 by bmota-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ int	cd(char **argv)
 	if (argv == NULL || envv == NULL || (argc > 2))
 	{
 		g_status_flag = 1;
-		printf("bash: cd: too many arguments\n");
+		if (argc > 2)
+			printf("bash: cd: too many arguments\n");
 		return (EXIT_FAILURE);
 	}
 	if (argc == 1 || !ft_strcmp(argv[1], "~"))
