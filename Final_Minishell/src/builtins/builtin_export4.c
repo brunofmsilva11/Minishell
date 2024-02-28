@@ -6,7 +6,7 @@
 /*   By: bmota-si <bmota-si@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 17:24:34 by mde-sa--          #+#    #+#             */
-/*   Updated: 2024/02/23 13:57:50 by bmota-si         ###   ########.fr       */
+/*   Updated: 2024/02/28 10:51:03 by bmota-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	check_argv_var(char *argv)
 		return (EXIT_FAILURE);
 	while (argv[i] != '\0' && argv[i] != '=')
 	{
-		if (argv[i] == '-' || argv[i] == '+' || argv[i] == '.' || argv[i] == '/')
+		if (argv[i] == '-' || argv[i] == '+' || argv[i] == '.' || argv[i] == '/' || argv[i] == ' ')
 		{
 			ft_printf("'%s' Not a valid identifier!\n", argv);
 			return (EXIT_FAILURE);
