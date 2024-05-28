@@ -1,6 +1,6 @@
 # minishell
 
-**minishell** is a project developed at 42, an innovative programming school. The goal of this project is to create a simple shell, similar to bash, that can execute commands, handle errors, and manage processes. This project teaches fundamental concepts of operating systems, process control, and user interfaces in C.
+**minishell** is a project developed at 42. The goal of this project is to create a simple shell, similar to bash, that can execute commands, handle errors, and manage processes. This project teaches fundamental concepts of operating systems, process control, and user interfaces in C.
 
 ## Project Objectives
 
@@ -24,3 +24,4 @@
 - **Error Handling**: Display appropriate error messages for invalid commands or arguments.
 
 ## How to use
+[Screencast from 28-05-2024 19:26:34.webm](https://github.com/brunofmsilva11/Minishell/assets/117391049/0a8159d9-a351-4ddd-81a0-b3f2986a73b2)
