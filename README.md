@@ -16,7 +16,7 @@
 
 - **Prompt Display**: Display a prompt and wait for user input.
 - **Command Parsing**: Parse user input to separate commands and arguments.
-- **Built-in Commands**: Implement built-in commands like `cd`, `echo`, `exit`, `env`, `setenv`, `unsetenv`.
+- **Built-in Commands**: Implement built-in commands like `cd`, `echo`, `exit`, `env`, `export`, `unset`, `pwd`.
 - **Execution of External Commands**: Execute external system commands by forking processes.
 - **Redirection**: Handle input and output redirections (`>`, `>>`, `<`).
 - **Pipes**: Support for piping between commands (`|`).
