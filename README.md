@@ -18,7 +18,7 @@
 - **Command Parsing**: Parse user input to separate commands and arguments.
 - **Built-in Commands**: Implement built-in commands like `cd`, `echo`, `exit`, `env`, `export`, `unset`, `pwd`.
 - **Execution of External Commands**: Execute external system commands by forking processes.
-- **Redirection**: Handle input and output redirections (`>`, `>>`, `<`).
+- **Redirection**: Handle input and output redirections (`>`, `>>`, `<`, `<<`).
 - **Pipes**: Support for piping between commands (`|`).
 - **Signal Handling**: Manage terminal signals (`SIGINT`, `SIGQUIT`, etc.).
 - **Error Handling**: Display appropriate error messages for invalid commands or arguments.
